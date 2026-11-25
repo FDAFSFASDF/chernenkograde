@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Upgrader</title>
+<title>Upgrader Calculator</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -16,14 +16,14 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    padding: 20px;
   }
 
   h1 {
-    font-size: 28px;
+    font-size: 32px;
     margin-bottom: 30px;
     text-transform: uppercase;
-    letter-spacing: 3px;
+    letter-spacing: 4px;
     background: linear-gradient(90deg, #f5c518, #ff6b35);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -34,139 +34,8 @@
     flex-direction: column;
     align-items: center;
     gap: 20px;
-  }
-
-  /* --- Колесо --- */
-  .wheel-wrapper {
-    position: relative;
-    width: 320px;
-    height: 320px;
-  }
-
-  .wheel-bg {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background: #151520;
-    border: 2px solid #222;
-  }
-
-  .wheel-ring {
-    position: absolute;
-    inset: 10px;
-    border-radius: 50%;
-    background: conic-gradient(
-      #f5c518 0deg,
-      #f5a623 60deg,
-      #ff6b35 120deg,
-      #e74c3c 180deg,
-      #c0392b 240deg,
-      #8e44ad 300deg,
-      #f5c518 360deg
-    );
-    mask: radial-gradient(circle, transparent 62%, #000 63%, #000 72%, transparent 73%);
-    -webkit-mask: radial-gradient(circle, transparent 62%, #000 63%, #000 72%, transparent 73%);
-  }
-
-  .wheel-ring.spinning {
-    animation: spinWheel 3s cubic-bezier(0.17, 0.67, 0.12, 0.99) forwards;
-  }
-
-  @keyframes spinWheel {
-    0%   { transform: rotate(0deg); }
-    100% { transform: rotate(var(--target-rotation)); }
-  }
-
-  .wheel-inner {
-    position: absolute;
-    inset: 30px;
-    border-radius: 50%;
-    background: #111118;
-    border: 1px solid #1a1a2e;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 5px;
-  }
-
-  .chevron-up {
-    width: 0; height: 0;
-    border-left: 30px solid transparent;
-    border-right: 30px solid transparent;
-    border-bottom: 25px solid #f5c518;
-    position: relative;
-  }
-  .chevron-up::after {
-    content: '';
-    position: absolute;
-    top: 10px; left: -30px;
-    width: 0; height: 0;
-    border-left: 30px solid transparent;
-    border-right: 30px solid transparent;
-    border-bottom: 25px solid #111118;
-  }
-
-  .chevron-up2 {
-    width: 0; height: 0;
-    border-left: 30px solid transparent;
-    border-right: 30px solid transparent;
-    border-bottom: 25px solid #f5c518;
-    position: relative;
-    margin-top: -10px;
-  }
-  .chevron-up2::after {
-    content: '';
-    position: absolute;
-    top: 10px; left: -30px;
-    width: 0; height: 0;
-    border-left: 30px solid transparent;
-    border-right: 30px solid transparent;
-    border-bottom: 25px solid #111118;
-  }
-
-  .chance-display {
-    font-size: 32px;
-    font-weight: 900;
-    color: #f5c518;
-    margin-top: 5px;
-  }
-
-  .chance-label {
-    font-size: 11px;
-    color: #666;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-  }
-
-  /* Стрелка-указатель */
-  .pointer {
-    position: absolute;
-    bottom: -5px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0; height: 0;
-    border-left: 12px solid transparent;
-    border-right: 12px solid transparent;
-    border-bottom: 22px solid #f5c518;
-    z-index: 10;
-    filter: drop-shadow(0 0 6px #f5c518);
-  }
-
-  /* Тики на колесе */
-  .ticks {
-    position: absolute;
-    inset: 5px;
-    border-radius: 50%;
-  }
-  .tick {
-    position: absolute;
-    width: 2px;
-    height: 12px;
-    background: #333;
-    top: 0;
-    left: 50%;
-    transform-origin: 0 155px;
+    max-width: 400px;
+    width: 100%;
   }
 
   /* --- Поля ввода --- */
@@ -176,12 +45,15 @@
     align-items: center;
     flex-wrap: wrap;
     justify-content: center;
+    width: 100%;
   }
 
   .input-group {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    flex: 1;
+    min-width: 140px;
   }
 
   .input-group label {
@@ -192,13 +64,13 @@
   }
 
   .input-group input {
-    width: 160px;
-    padding: 12px 16px;
+    width: 100%;
+    padding: 14px 16px;
     background: #1a1a2e;
     border: 2px solid #2a2a3e;
     border-radius: 10px;
     color: #fff;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
     outline: none;
     transition: border-color 0.3s;
@@ -214,9 +86,243 @@
     margin-top: 18px;
   }
 
+  /* --- Быстрые кнопки --- */
+  .multipliers {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .mult-btn {
+    padding: 10px 18px;
+    font-size: 15px;
+    font-weight: 800;
+    border: 2px solid #2a2a3e;
+    border-radius: 8px;
+    background: #1a1a2e;
+    color: #f5c518;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .mult-btn:hover {
+    border-color: #f5c518;
+    background: #2a2a1e;
+    transform: scale(1.05);
+  }
+
+  .mult-btn.active {
+    border-color: #f5c518;
+    background: #f5c518;
+    color: #000;
+  }
+
+  /* --- Инфо --- */
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 16px;
+    background: #1a1a2e;
+    border-radius: 10px;
+    border: 1px solid #2a2a3e;
+  }
+
+  .info-item {
+    text-align: center;
+  }
+
+  .info-item .label {
+    font-size: 10px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .info-item .value {
+    font-size: 20px;
+    font-weight: 800;
+    color: #f5c518;
+    margin-top: 2px;
+  }
+
+  .info-item .value.green { color: #2ecc71; }
+  .info-item .value.red { color: #e74c3c; }
+
+  /* --- Прогресс-бар --- */
+  .chance-bar-wrapper {
+    width: 100%;
+    height: 10px;
+    background: #1a1a2e;
+    border-radius: 5px;
+    overflow: hidden;
+    display: flex;
+  }
+
+  .chance-bar-win {
+    height: 100%;
+    background: linear-gradient(90deg, #2ecc71, #27ae60);
+    transition: width 0.4s;
+  }
+
+  .chance-bar-lose {
+    height: 100%;
+    background: linear-gradient(90deg, #e74c3c, #c0392b);
+    flex: 1;
+  }
+
+  /* --- Колесо --- */
+  .wheel-wrapper {
+    position: relative;
+    width: 320px;
+    height: 320px;
+  }
+
+  .wheel-bg {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: #151520;
+    border: 3px solid #222;
+    transition: border-color 0.5s, box-shadow 0.5s;
+  }
+
+  .wheel-ring {
+    position: absolute;
+    inset: 10px;
+    border-radius: 50%;
+    background: conic-gradient(
+      #2ecc71 0deg,
+      #2ecc71 var(--win-deg, 120deg),
+      #e74c3c var(--win-deg, 120deg),
+      #e74c3c 360deg
+    );
+    mask: radial-gradient(circle, transparent 60%, #000 61%, #000 72%, transparent 73%);
+    -webkit-mask: radial-gradient(circle, transparent 60%, #000 61%, #000 72%, transparent 73%);
+    transition: transform 3s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+  }
+
+  .wheel-inner {
+    position: absolute;
+    inset: 35px;
+    border-radius: 50%;
+    background: #111118;
+    border: 1px solid #1a1a2e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .chevron-up {
+    width: 0; height: 0;
+    border-left: 28px solid transparent;
+    border-right: 28px solid transparent;
+    border-bottom: 22px solid #f5c518;
+    position: relative;
+  }
+  .chevron-up::after {
+    content: '';
+    position: absolute;
+    top: 8px; left: -28px;
+    width: 0; height: 0;
+    border-left: 28px solid transparent;
+    border-right: 28px solid transparent;
+    border-bottom: 22px solid #111118;
+  }
+
+  .chevron-up2 {
+    width: 0; height: 0;
+    border-left: 28px solid transparent;
+    border-right: 28px solid transparent;
+    border-bottom: 22px solid #f5c518;
+    position: relative;
+    margin-top: -8px;
+  }
+  .chevron-up2::after {
+    content: '';
+    position: absolute;
+    top: 8px; left: -28px;
+    width: 0; height: 0;
+    border-left: 28px solid transparent;
+    border-right: 28px solid transparent;
+    border-bottom: 22px solid #111118;
+  }
+
+  .chance-display {
+    font-size: 30px;
+    font-weight: 900;
+    color: #f5c518;
+    margin-top: 5px;
+  }
+
+  .chance-label {
+    font-size: 10px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  /* Деления */
+  .ticks {
+    position: absolute;
+    inset: 5px;
+    border-radius: 50%;
+  }
+  .tick {
+    position: absolute;
+    width: 2px;
+    height: 14px;
+    background: rgba(255,255,255,0.3);
+    top: 0;
+    left: 50%;
+    transform-origin: 0 155px;
+  }
+  .tick.major {
+    height: 18px;
+    width: 3px;
+    background: rgba(255,255,255,0.6);
+  }
+
+  /* Указатель */
+  .pointer {
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 14px solid transparent;
+    border-right: 14px solid transparent;
+    border-bottom: 24px solid #fff;
+    z-index: 10;
+    filter: drop-shadow(0 0 8px rgba(255,255,255,0.5));
+  }
+
+  /* Легенда */
+  .legend {
+    display: flex;
+    gap: 20px;
+    font-size: 12px;
+    color: #888;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .legend-dot.green { background: #2ecc71; }
+  .legend-dot.red { background: #e74c3c; }
+
   /* --- Кнопка --- */
   .upgrade-btn {
-    padding: 16px 60px;
+    padding: 18px 60px;
     font-size: 20px;
     font-weight: 800;
     text-transform: uppercase;
@@ -230,11 +336,12 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-top: 10px;
+    width: 100%;
+    justify-content: center;
   }
 
   .upgrade-btn:hover {
-    transform: scale(1.05);
+    transform: scale(1.03);
     box-shadow: 0 0 30px rgba(245, 197, 24, 0.4);
   }
 
@@ -245,16 +352,11 @@
     box-shadow: none;
   }
 
-  .upgrade-btn .btn-icon {
-    font-size: 22px;
-  }
-
   /* --- Результат --- */
   .result {
     font-size: 22px;
     font-weight: 800;
     min-height: 35px;
-    margin-top: 5px;
     text-transform: uppercase;
     letter-spacing: 2px;
   }
@@ -269,52 +371,17 @@
     text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
   }
 
-  /* Баланс */
-  .balance {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: #1a1a2e;
-    border: 1px solid #2a2a3e;
-    border-radius: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    font-weight: 700;
-  }
-  .balance span {
-    color: #f5c518;
-  }
-
-  /* Прогресс-бар шанса */
-  .chance-bar-wrapper {
-    width: 320px;
-    height: 8px;
-    background: #1a1a2e;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-top: 5px;
-  }
-  .chance-bar {
-    height: 100%;
-    background: linear-gradient(90deg, #f5c518, #ff6b35);
-    border-radius: 4px;
-    transition: width 0.4s;
-  }
-
-  /* Glow эффект при выигрыше */
   .wheel-wrapper.win-glow .wheel-bg {
     border-color: #2ecc71;
-    box-shadow: 0 0 40px rgba(46, 204, 113, 0.3);
+    box-shadow: 0 0 50px rgba(46, 204, 113, 0.4);
   }
   .wheel-wrapper.lose-glow .wheel-bg {
     border-color: #e74c3c;
-    box-shadow: 0 0 40px rgba(231, 76, 60, 0.3);
+    box-shadow: 0 0 50px rgba(231, 76, 60, 0.4);
   }
 </style>
 </head>
 <body>
-
-<div class="balance">Баланс: <span id="balanceDisplay">1000</span> ₽</div>
 
 <h1>⚡ Upgrader</h1>
 
@@ -328,12 +395,41 @@
     <div class="arrow-between">➜</div>
     <div class="input-group">
       <label>Выигрыш</label>
-      <input type="number" id="winInput" value="300" min="1">
+      <input type="number" id="winInput" value="200" min="1">
+    </div>
+  </div>
+
+  <div class="multipliers">
+    <button class="mult-btn" onclick="setMult(2)">X2</button>
+    <button class="mult-btn" onclick="setMult(3)">X3</button>
+    <button class="mult-btn" onclick="setMult(4)">X4</button>
+    <button class="mult-btn" onclick="setMult(8)">X8</button>
+    <button class="mult-btn" onclick="setMult(10)">X10</button>
+  </div>
+
+  <div class="info-row">
+    <div class="info-item">
+      <div class="label">Шанс</div>
+      <div class="value" id="chanceDisplay">50.0%</div>
+    </div>
+    <div class="info-item">
+      <div class="label">Множитель</div>
+      <div class="value" id="multDisplay">X2.00</div>
+    </div>
+    <div class="info-item">
+      <div class="label">Профит</div>
+      <div class="value green" id="profitDisplay">+100</div>
     </div>
   </div>
 
   <div class="chance-bar-wrapper">
-    <div class="chance-bar" id="chanceBar" style="width: 33.33%"></div>
+    <div class="chance-bar-win" id="chanceBarWin" style="width: 50%"></div>
+    <div class="chance-bar-lose"></div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot green"></div> Выигрыш</div>
+    <div class="legend-item"><div class="legend-dot red"></div> Проигрыш</div>
   </div>
 
   <div class="wheel-wrapper" id="wheelWrapper">
@@ -343,14 +439,14 @@
     <div class="wheel-inner">
       <div class="chevron-up"></div>
       <div class="chevron-up2"></div>
-      <div class="chance-display" id="chanceDisplay">33.3%</div>
+      <div class="chance-display" id="chanceDisplay2">50.0%</div>
       <div class="chance-label">шанс</div>
     </div>
     <div class="pointer"></div>
   </div>
 
   <button class="upgrade-btn" id="upgradeBtn" onclick="upgrade()">
-    <span class="btn-icon">⬆</span> Улучшить
+    ⬆ Улучшить
   </button>
 
   <div class="result" id="result"></div>
@@ -358,25 +454,28 @@
 </div>
 
 <script>
-  let balance = 1000;
   let isSpinning = false;
+  let currentRotation = 0;
 
   const betInput = document.getElementById('betInput');
   const winInput = document.getElementById('winInput');
   const chanceDisplay = document.getElementById('chanceDisplay');
-  const chanceBar = document.getElementById('chanceBar');
+  const chanceDisplay2 = document.getElementById('chanceDisplay2');
+  const multDisplay = document.getElementById('multDisplay');
+  const profitDisplay = document.getElementById('profitDisplay');
+  const chanceBarWin = document.getElementById('chanceBarWin');
   const wheelRing = document.getElementById('wheelRing');
   const wheelWrapper = document.getElementById('wheelWrapper');
   const upgradeBtn = document.getElementById('upgradeBtn');
   const resultEl = document.getElementById('result');
-  const balanceDisplay = document.getElementById('balanceDisplay');
   const ticksContainer = document.getElementById('ticks');
+  const multBtns = document.querySelectorAll('.mult-btn');
 
-  // Создаём тики
-  for (let i = 0; i < 60; i++) {
+  // Создаём деления
+  for (let i = 0; i < 72; i++) {
     const tick = document.createElement('div');
-    tick.className = 'tick';
-    tick.style.transform = `rotate(${i * 6}deg)`;
+    tick.className = 'tick' + (i % 6 === 0 ? ' major' : '');
+    tick.style.transform = `rotate(${i * 5}deg)`;
     ticksContainer.appendChild(tick);
   }
 
@@ -384,23 +483,57 @@
     const bet = parseFloat(betInput.value) || 0;
     const win = parseFloat(winInput.value) || 0;
     if (win <= 0 || bet <= 0) return 0;
-    return Math.min((bet / win) * 100, 99);
+    return Math.min((bet / win) * 100, 98);
+  }
+
+  function getMult() {
+    const bet = parseFloat(betInput.value) || 0;
+    const win = parseFloat(winInput.value) || 0;
+    if (bet <= 0) return 0;
+    return win / bet;
   }
 
   function updateDisplay() {
     const chance = getChance();
-    chanceDisplay.textContent = chance.toFixed(1) + '%';
-    chanceBar.style.width = chance + '%';
-
+    const mult = getMult();
     const bet = parseFloat(betInput.value) || 0;
     const win = parseFloat(winInput.value) || 0;
-    if (bet > win) {
+    const profit = win - bet;
+
+    chanceDisplay.textContent = chance.toFixed(1) + '%';
+    chanceDisplay2.textContent = chance.toFixed(1) + '%';
+    multDisplay.textContent = 'X' + mult.toFixed(2);
+    profitDisplay.textContent = (profit >= 0 ? '+' : '') + profit.toFixed(0);
+    profitDisplay.className = 'value ' + (profit >= 0 ? 'green' : 'red');
+    chanceBarWin.style.width = chance + '%';
+
+    // Обновляем кольцо
+    const winDeg = (chance / 100) * 360;
+    wheelRing.style.setProperty('--win-deg', winDeg + 'deg');
+
+    // Подсветка активной кнопки множителя
+    multBtns.forEach(btn => {
+      const btnMult = parseFloat(btn.textContent.replace('X', ''));
+      btn.classList.toggle('active', Math.abs(mult - btnMult) < 0.01);
+    });
+
+    // Цвет шанса
+    if (chance > 60) {
       chanceDisplay.style.color = '#2ecc71';
-    } else if (chance < 10) {
+      chanceDisplay2.style.color = '#2ecc71';
+    } else if (chance < 20) {
       chanceDisplay.style.color = '#e74c3c';
+      chanceDisplay2.style.color = '#e74c3c';
     } else {
       chanceDisplay.style.color = '#f5c518';
+      chanceDisplay2.style.color = '#f5c518';
     }
+  }
+
+  function setMult(m) {
+    const bet = parseFloat(betInput.value) || 100;
+    winInput.value = Math.round(bet * m);
+    updateDisplay();
   }
 
   betInput.addEventListener('input', updateDisplay);
@@ -414,17 +547,12 @@
     const chance = getChance();
 
     if (bet <= 0 || win <= 0) {
-      resultEl.textContent = 'Введите корректные значения!';
-      resultEl.className = 'result lose';
-      return;
-    }
-    if (bet > balance) {
-      resultEl.textContent = 'Недостаточно средств!';
+      resultEl.textContent = 'Введите значения!';
       resultEl.className = 'result lose';
       return;
     }
     if (bet >= win) {
-      resultEl.textContent = 'Выигрыш должен быть больше ставки!';
+      resultEl.textContent = 'Выигрыш > ставки!';
       resultEl.className = 'result lose';
       return;
     }
@@ -435,66 +563,44 @@
     resultEl.className = 'result';
     wheelWrapper.classList.remove('win-glow', 'lose-glow');
 
-    // Определяем результат
     const roll = Math.random() * 100;
     const isWin = roll < chance;
 
-    // Рассчитываем угол остановки
-    // Шанс = процент круга (зелёная зона от 0 до chance%)
-    // Указатель внизу = 180 градусов (6 часов)
-    // Нужно чтобы стрелка остановилась в зелёной зоне при выигрыше
     const chanceDeg = (chance / 100) * 360;
-
     let targetAngle;
+
     if (isWin) {
-      // Остановиться в зелёной зоне (0 до chanceDeg), указатель на 180°
-      // Кольцо крутится, указатель статичен внизу
-      // Зелёная зона: от 0° до chanceDeg по кольцу
-      // Указатель смотрит на 180° (низ)
-      // Нужно: (180 - targetAngle) mod 360 должно быть в [0, chanceDeg]
       const winZoneCenter = chanceDeg / 2;
-      const offset = (Math.random() - 0.5) * chanceDeg * 0.8;
+      const offset = (Math.random() - 0.5) * chanceDeg * 0.7;
       targetAngle = 180 - winZoneCenter - offset;
     } else {
-      // Остановиться в красной зоне
       const loseZoneStart = chanceDeg;
       const loseZoneEnd = 360;
       const loseZoneCenter = (loseZoneStart + loseZoneEnd) / 2;
       const loseZoneSize = loseZoneEnd - loseZoneStart;
-      const offset = (Math.random() - 0.5) * loseZoneSize * 0.8;
+      const offset = (Math.random() - 0.5) * loseZoneSize * 0.7;
       targetAngle = 180 - loseZoneCenter - offset;
     }
 
-    // Добавляем несколько полных оборотов
     const fullSpins = 5 + Math.floor(Math.random() * 3);
-    const totalRotation = fullSpins * 360 + targetAngle;
+    const totalRotation = currentRotation + fullSpins * 360 + (targetAngle - (currentRotation % 360));
+    currentRotation = totalRotation;
 
-    wheelRing.style.setProperty('--target-rotation', totalRotation + 'deg');
-    wheelRing.classList.remove('spinning');
-    void wheelRing.offsetWidth; // reflow
-    wheelRing.classList.add('spinning');
-
-    // Снимаем ставку
-    balance -= bet;
-    balanceDisplay.textContent = balance.toFixed(0);
+    wheelRing.style.transform = `rotate(${totalRotation}deg)`;
 
     setTimeout(() => {
       if (isWin) {
-        balance += win;
-        balanceDisplay.textContent = balance.toFixed(0);
-        resultEl.textContent = `🎉 Выигрыш! +${win.toFixed(0)} ₽`;
+        resultEl.textContent = `🎉 ВЫИГРЫШ! +${(win - bet).toFixed(0)}`;
         resultEl.className = 'result win';
         wheelWrapper.classList.add('win-glow');
       } else {
-        resultEl.textContent = `💀 Проигрыш! -${bet.toFixed(0)} ₽`;
+        resultEl.textContent = `💀 ПРОИГРЫШ! -${bet.toFixed(0)}`;
         resultEl.className = 'result lose';
         wheelWrapper.classList.add('lose-glow');
       }
 
       isSpinning = false;
       upgradeBtn.disabled = false;
-      wheelRing.classList.remove('spinning');
-      wheelRing.style.transform = 'rotate(0deg)';
     }, 3200);
   }
 
