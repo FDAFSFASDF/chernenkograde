@@ -44,7 +44,6 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: shimmer 3s ease-in-out infinite;
-    text-shadow: 0 0 40px rgba(245,197,24,0.3);
     position: relative;
   }
 
@@ -80,7 +79,6 @@
     z-index: 1;
   }
 
-  /* --- Карточка ввода --- */
   .card {
     background: rgba(20, 20, 35, 0.8);
     backdrop-filter: blur(20px);
@@ -131,10 +129,6 @@
     box-shadow: 0 0 20px rgba(245,197,24,0.15);
   }
 
-  .input-group input::placeholder {
-    color: #333;
-  }
-
   .arrow-icon {
     font-size: 24px;
     color: #f5c518;
@@ -142,7 +136,6 @@
     flex-shrink: 0;
   }
 
-  /* --- Множители --- */
   .multipliers {
     display: flex;
     gap: 8px;
@@ -179,7 +172,6 @@
     box-shadow: 0 0 20px rgba(245,197,24,0.15);
   }
 
-  /* --- Статистика --- */
   .stats {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -193,10 +185,6 @@
     padding: 16px 12px;
     text-align: center;
     transition: all 0.3s;
-  }
-
-  .stat-box:hover {
-    border-color: rgba(255,255,255,0.12);
   }
 
   .stat-label {
@@ -217,7 +205,6 @@
   .stat-value.green { color: #2ecc71; }
   .stat-value.red { color: #e74c3c; }
 
-  /* --- Полоса шанса --- */
   .bar-container {
     width: 100%;
     height: 8px;
@@ -225,7 +212,6 @@
     border-radius: 4px;
     overflow: hidden;
     display: flex;
-    position: relative;
   }
 
   .bar-win {
@@ -253,7 +239,6 @@
   .bar-labels .win-label { color: #2ecc71; }
   .bar-labels .lose-label { color: #e74c3c; }
 
-  /* --- Колесо --- */
   .wheel-section {
     position: relative;
     display: flex;
@@ -272,9 +257,12 @@
     inset: 0;
     border-radius: 50%;
     background: conic-gradient(
-      #2ecc71 0deg,
-      #2ecc71 var(--win-deg, 180deg),
-      #e74c3c var(--win-deg, 180deg),
+      from 0deg,
+      #e74c3c 0deg,
+      #e74c3c calc(180deg - var(--win-half, 90deg)),
+      #2ecc71 calc(180deg - var(--win-half, 90deg)),
+      #2ecc71 calc(180deg + var(--win-half, 90deg)),
+      #e74c3c calc(180deg + var(--win-half, 90deg)),
       #e74c3c 360deg
     );
     padding: 4px;
@@ -292,7 +280,6 @@
     box-shadow: inset 0 0 40px rgba(0,0,0,0.5);
   }
 
-  /* Деления */
   .ticks {
     position: absolute;
     inset: 8px;
@@ -317,14 +304,15 @@
   }
 
   .tick.win-tick {
-    background: rgba(46,204,113,0.4);
+    background: #2ecc71;
+    box-shadow: 0 0 4px rgba(46,204,113,0.6);
   }
 
   .tick.lose-tick {
-    background: rgba(231,76,60,0.3);
+    background: #e74c3c;
+    box-shadow: 0 0 4px rgba(231,76,60,0.4);
   }
 
-  /* Центр колеса */
   .wheel-center {
     position: absolute;
     inset: 50px;
@@ -380,40 +368,45 @@
     font-weight: 700;
   }
 
-  /* Стрелка */
-  .arrow-container {
+  .arrow-orbit {
     position: absolute;
-    bottom: -10px;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .arrow-spinner {
+    position: absolute;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
-    width: 40px;
-    height: 40px;
-    z-index: 10;
-  }
-
-  .arrow {
-    width: 100%;
-    height: 100%;
-    transform-origin: 50% 50%;
+    width: 0;
+    height: 0;
+    transform-origin: 0 0;
     transition: transform 3s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-    filter: drop-shadow(0 0 10px rgba(245,197,24,0.6));
   }
 
-  .arrow svg {
+  .arrow-head {
+    position: absolute;
+    left: -12px;
+    top: -145px;
+    width: 24px;
+    height: 24px;
+    filter: drop-shadow(0 0 10px rgba(245,197,24,0.8));
+  }
+
+  .arrow-head svg {
     width: 100%;
     height: 100%;
   }
 
-  /* Свечение при результате */
   .wheel-wrapper.win-glow .wheel-outer-ring {
-    box-shadow: 0 0 40px rgba(46,204,113,0.4), 0 0 80px rgba(46,204,113,0.15);
+    box-shadow: 0 0 40px rgba(46,204,113,0.5), 0 0 80px rgba(46,204,113,0.2);
   }
 
   .wheel-wrapper.lose-glow .wheel-outer-ring {
-    box-shadow: 0 0 40px rgba(231,76,60,0.4), 0 0 80px rgba(231,76,60,0.15);
+    box-shadow: 0 0 40px rgba(231,76,60,0.5), 0 0 80px rgba(231,76,60,0.2);
   }
 
-  /* --- Кнопка --- */
   .upgrade-btn {
     padding: 18px 50px;
     font-size: 18px;
@@ -470,7 +463,6 @@
     display: none;
   }
 
-  /* --- Результат --- */
   .result {
     font-size: 20px;
     font-weight: 900;
@@ -506,12 +498,12 @@
     80% { transform: translateX(5px); }
   }
 
-  /* Адаптив */
   @media (max-width: 480px) {
     .logo { font-size: 28px; letter-spacing: 4px; }
     .logo::after { right: -35px; font-size: 22px; }
     .wheel-wrapper { width: 260px; height: 260px; }
     .tick { transform-origin: 0 122px; }
+    .arrow-head { top: -125px; }
     .wheel-center { inset: 40px; }
     .stat-value { font-size: 18px; }
   }
@@ -532,7 +524,7 @@
       <div class="arrow-icon">➜</div>
       <div class="input-group">
         <label>Выигрыш</label>
-        <input type="number" id="winInput" value="200" min="1" placeholder="0">
+        <input type="number" id="winInput" value="150" min="1" placeholder="0">
       </div>
     </div>
 
@@ -549,26 +541,26 @@
   <div class="stats">
     <div class="stat-box">
       <div class="stat-label">Шанс</div>
-      <div class="stat-value" id="chanceDisplay">50.0%</div>
+      <div class="stat-value" id="chanceDisplay">66.7%</div>
     </div>
     <div class="stat-box">
       <div class="stat-label">Множитель</div>
-      <div class="stat-value" id="multDisplay">X2.00</div>
+      <div class="stat-value" id="multDisplay">X1.50</div>
     </div>
     <div class="stat-box">
       <div class="stat-label">Профит</div>
-      <div class="stat-value green" id="profitDisplay">+100</div>
+      <div class="stat-value green" id="profitDisplay">+50</div>
     </div>
   </div>
 
   <div style="width:100%">
     <div class="bar-container">
-      <div class="bar-win" id="barWin" style="width:50%"></div>
+      <div class="bar-win" id="barWin" style="width:66.7%"></div>
       <div class="bar-lose"></div>
     </div>
     <div class="bar-labels">
-      <span class="win-label" id="winLabel">50.0% выигрыш</span>
-      <span class="lose-label" id="loseLabel">50.0% проигрыш</span>
+      <span class="win-label" id="winLabel">66.7% выигрыш</span>
+      <span class="lose-label" id="loseLabel">33.3% проигрыш</span>
     </div>
   </div>
 
@@ -582,16 +574,18 @@
           <div class="chevron"></div>
           <div class="chevron"></div>
         </div>
-        <div class="center-chance" id="centerChance">50.0%</div>
+        <div class="center-chance" id="centerChance">66.7%</div>
         <div class="center-label">шанс</div>
       </div>
-      <div class="arrow-container">
-        <div class="arrow" id="arrow">
-          <svg viewBox="0 0 40 40" fill="none">
-            <path d="M20 2 L20 28" stroke="#f5c518" stroke-width="3" stroke-linecap="round"/>
-            <path d="M12 18 L20 6 L28 18" stroke="#f5c518" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="20" cy="32" r="5" fill="#f5c518"/>
-          </svg>
+      <div class="arrow-orbit">
+        <div class="arrow-spinner" id="arrowSpinner">
+          <div class="arrow-head">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 2L12 18" stroke="#f5c518" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M6 12L12 4L18 12" stroke="#f5c518" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="12" cy="20" r="3" fill="#f5c518"/>
+            </svg>
+          </div>
         </div>
       </div>
     </div>
@@ -623,10 +617,9 @@
   const upgradeBtn = document.getElementById('upgradeBtn');
   const resultEl = document.getElementById('result');
   const ticksContainer = document.getElementById('ticks');
-  const arrow = document.getElementById('arrow');
+  const arrowSpinner = document.getElementById('arrowSpinner');
   const multBtns = document.querySelectorAll('.mult-btn');
 
-  // Создаём деления
   for (let i = 0; i < 72; i++) {
     const tick = document.createElement('div');
     tick.className = 'tick' + (i % 6 === 0 ? ' major' : '');
@@ -665,14 +658,15 @@
     loseLabel.textContent = (100 - chance).toFixed(1) + '% проигрыш';
 
     const winDeg = (chance / 100) * 360;
-    wheelRing.style.setProperty('--win-deg', winDeg + 'deg');
+    const winHalf = winDeg / 2;
+    wheelRing.style.setProperty('--win-half', winHalf + 'deg');
 
-    // Обновляем цвет делений
     const ticks = ticksContainer.querySelectorAll('.tick');
     ticks.forEach((tick, i) => {
       const angle = i * 5;
       tick.classList.remove('win-tick', 'lose-tick');
-      if (angle < winDeg) {
+      // Зелёная зона симметрично внизу: от (180-winHalf) до (180+winHalf)
+      if (angle >= (180 - winHalf) && angle <= (180 + winHalf)) {
         tick.classList.add('win-tick');
       } else {
         tick.classList.add('lose-tick');
@@ -732,28 +726,48 @@
     const roll = Math.random() * 100;
     const isWin = roll < chance;
 
-    const chanceDeg = (chance / 100) * 360;
-    let targetAngle;
+    const winDeg = (chance / 100) * 360;
+    const winHalf = winDeg / 2;
 
-    // Стрелка указывает вверх (0° = верх)
-    // Зелёная зона: от 0° до chanceDeg (по часовой от верха)
-    // Нужно чтобы стрелка остановилась в нужной зоне
+    // Стрелка изначально указывает ВВЕРХ (0°)
+    // После поворота на rotation° указывает на (rotation mod 360)
+    // Зелёная зона (выигрыш): от (180-winHalf) до (180+winHalf) — ВНИЗУ
+    // Красная зона (проигрыш): от 0 до (180-winHalf) и от (180+winHalf) до 360 — СВЕРХУ
+
+    let targetMod;
+
     if (isWin) {
-      const center = chanceDeg / 2;
-      const offset = (Math.random() - 0.5) * chanceDeg * 0.6;
-      targetAngle = -(center + offset); // отрицательное = против часовой (стрелка крутится)
+      // Стрелка должна указать ВНИЗ (в зелёную зону)
+      // targetMod должен быть около 180°
+      const offset = (Math.random() - 0.5) * winHalf * 1.6;
+      targetMod = 180 + offset;
     } else {
-      const loseCenter = chanceDeg + (360 - chanceDeg) / 2;
-      const loseSize = 360 - chanceDeg;
-      const offset = (Math.random() - 0.5) * loseSize * 0.6;
-      targetAngle = -(loseCenter + offset);
+      // Стрелка должна указать ВВЕРХ (в красную зону)
+      // Выбираем случайно верхнюю левую или верхнюю правую часть
+      if (Math.random() < 0.5) {
+        // Верхняя левая: от 0 до (180-winHalf)
+        const maxAngle = 180 - winHalf;
+        targetMod = Math.random() * maxAngle * 0.85 + maxAngle * 0.05;
+      } else {
+        // Верхняя правая: от (180+winHalf) до 360
+        const minAngle = 180 + winHalf;
+        const maxAngle = 360;
+        targetMod = minAngle + Math.random() * (maxAngle - minAngle) * 0.85 + (maxAngle - minAngle) * 0.05;
+      }
     }
 
-    const fullSpins = 5 + Math.floor(Math.random() * 4);
-    const totalRotation = currentArrowRotation + fullSpins * 360 + (targetAngle - (currentArrowRotation % 360));
-    currentArrowRotation = totalRotation;
+    // Нормализуем текущий угол
+    const currentMod = ((currentArrowRotation % 360) + 360) % 360;
 
-    arrow.style.transform = `rotate(${totalRotation}deg)`;
+    // Вычисляем дельту (всегда крутим вперёд)
+    let delta = targetMod - currentMod;
+    if (delta <= 0) delta += 360;
+
+    // Добавляем полные обороты
+    const spins = (5 + Math.floor(Math.random() * 3)) * 360;
+    currentArrowRotation += delta + spins;
+
+    arrowSpinner.style.transform = `rotate(${currentArrowRotation}deg)`;
 
     setTimeout(() => {
       if (isWin) {
