@@ -216,7 +216,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 <div class="summary-box" id="summaryBox"></div>
 <div class="results-grid" id="resultsGrid"></div>
 <div class="confirm-buttons">
-<button class="confirm-btn btn-keep" onclick="confirmResults('keep')">📦 Оставить выбранные</button>
+<button class="confirm-btn btn-keep" onclick="confirmResults('keep')">📦 Оставить все</button>
 <button class="confirm-btn btn-sell-all" onclick="confirmResults('sell')">💰 Продать выбранные</button>
 <button class="confirm-btn btn-upgrade-all" onclick="confirmResults('upgrade')">⬆ В апгрейд</button>
 </div>
@@ -264,9 +264,17 @@ const items=[];
 const usedPrices=new Set();
 const isCheap=casePrice<=20;
 const zones=isCheap?[
-{count:7,min:.25,max:.75},{count:3,min:.85,max:1.3},{count:2,min:1.6,max:2.5},{count:1,min:3.5,max:6},{count:1,min:10,max:20}
+{count:8,min:.15,max:.60},
+{count:3,min:.70,max:1.20},
+{count:1,min:1.80,max:2.50},
+{count:1,min:4.00,max:7.00},
+{count:1,min:12.00,max:22.00}
 ]:[
-{count:9,min:.1,max:.5},{count:3,min:.6,max:1.1},{count:2,min:1.4,max:2.3},{count:1,min:3,max:5.5},{count:1,min:10,max:18}
+{count:9,min:.10,max:.50},
+{count:3,min:.60,max:1.10},
+{count:2,min:1.40,max:2.30},
+{count:1,min:3.00,max:5.50},
+{count:1,min:10.00,max:18.00}
 ];
 for(const zone of zones){
 let added=0,attempts=0;
@@ -297,10 +305,10 @@ function rollOneItem(){
 const roll=Math.random();
 let targetMult;
 if(roll<.60)targetMult=.10+Math.random()*.40;
-else if(roll<.83)targetMult=.60+Math.random()*.50;
-else if(roll<.94)targetMult=1.40+Math.random()*.90;
-else if(roll<.99)targetMult=3.00+Math.random()*.50;
-else targetMult=10.0+Math.random()*8.0;
+else if(roll<.80)targetMult=.75+Math.random()*.55;
+else if(roll<.88)targetMult=1.80+Math.random()*.70;
+else if(roll<.95)targetMult=4.00+Math.random()*3.00;
+else targetMult=12.0+Math.random()*10.0;
 const targetPrice=Math.round(currentCase.price*targetMult);
 let best=currentCase.items[0],bestDiff=Infinity;
 for(const it of currentCase.items){const d=Math.abs(it.p-targetPrice);if(d<bestDiff){bestDiff=d;best=it}}
@@ -310,27 +318,25 @@ function openCase(count){
 const totalCost=currentCase.price*count;
 if(balance<totalCost){alert('Недостаточно средств! Нужно '+totalCost+'₽');return}
 balance-=totalCost;updBal();
+pendingResults=[];
+for(let i=0;i<count;i++)pendingResults.push(rollOneItem());
+const firstItem=pendingResults[0];
 document.getElementById('openButtons').style.display='none';
 document.getElementById('rouletteContainer').style.display='block';
 document.getElementById('resultsArea').style.display='none';
 generateRoulette(currentCase);
 const strip=document.getElementById('rouletteStrip');
 const items=strip.querySelectorAll('.roulette-item');
-const wonItem=rollOneItem();
 const winPos=55;
 const winDiv=items[winPos];
-winDiv.querySelector('.item-emoji').textContent=wonItem.e;
-winDiv.querySelector('.item-name').textContent=wonItem.n;
-winDiv.querySelector('.item-price').textContent=wonItem.p+'₽';
+winDiv.querySelector('.item-emoji').textContent=firstItem.e;
+winDiv.querySelector('.item-name').textContent=firstItem.n;
+winDiv.querySelector('.item-price').textContent=firstItem.p+'₽';
 const iw=130;
 const tp=-(winPos*iw)+(document.querySelector('.roulette-container').offsetWidth/2)-(iw/2);
 strip.style.transition='left 4s cubic-bezier(.15,.85,.35,1)';
 strip.style.left=tp+'px';
-setTimeout(()=>{
-pendingResults=[];
-for(let i=0;i<count;i++)pendingResults.push(rollOneItem());
-showResults();
-},4200);
+setTimeout(()=>{showResults()},4200);
 }
 function showResults(){
 document.getElementById('rouletteContainer').style.display='none';
@@ -368,8 +374,8 @@ let soldTotal=0;
 const toKeep=[];
 pendingResults.forEach((it,idx)=>{
 if(selectedResults.has(idx)){
-if(action==='sell'){soldTotal+=it.p}
-else if(action==='upgrade'){toKeep.push(it)}
+if(action==='sell')soldTotal+=it.p;
+else if(action==='upgrade')toKeep.push(it);
 }else{
 toKeep.push(it);
 }
@@ -396,7 +402,7 @@ function openItemSelect(m){itemSelectMode=m;document.getElementById('itemSelectT
 function closeItemSelect(){document.getElementById('itemSelectModal').classList.remove('active')}
 function selIt(i,it,m){if(m==='bet')selectedBetItem={...inventory[i]};else selectedWinItem={...it};closeItemSelect();updateUpgradeSlots();updateUpgraderDisplay()}
 function updateUpgradeSlots(){const bs=document.getElementById('betSlot'),ws=document.getElementById('winSlot');if(selectedBetItem){bs.classList.add('filled');document.getElementById('betHint').style.display='none';document.getElementById('betEmoji').style.display='block';document.getElementById('betEmoji').textContent=selectedBetItem.e;document.getElementById('betName').style.display='block';document.getElementById('betName').textContent=selectedBetItem.n;document.getElementById('betPrice').style.display='block';document.getElementById('betPrice').textContent=selectedBetItem.p+' ₽'}else{bs.classList.remove('filled');document.getElementById('betHint').style.display='block';document.getElementById('betEmoji').style.display='none';document.getElementById('betName').style.display='none';document.getElementById('betPrice').style.display='none'}if(selectedWinItem){ws.classList.add('filled');document.getElementById('winHint').style.display='none';document.getElementById('winEmoji').style.display='block';document.getElementById('winEmoji').textContent=selectedWinItem.e;document.getElementById('winName').style.display='block';document.getElementById('winName').textContent=selectedWinItem.n;document.getElementById('winPrice').style.display='block';document.getElementById('winPrice').textContent=selectedWinItem.p+' ₽'}else{ws.classList.remove('filled');document.getElementById('winHint').style.display='block';document.getElementById('winEmoji').style.display='none';document.getElementById('winName').style.display='none';document.getElementById('winPrice').style.display='none'}}
-for(let i=0;i<72;i++){const t=document.createElement('div');t.className='tick'+(i%6===0?' major':'');t.style.transform='rotate('+(i*5)+'deg)';document.getElementById('tC')?document.getElementById('tC').appendChild(t):document.getElementById('ticks').appendChild(t)}
+for(let i=0;i<72;i++){const t=document.createElement('div');t.className='tick'+(i%6===0?' major':'');t.style.transform='rotate('+(i*5)+'deg)';document.getElementById('ticks').appendChild(t)}
 function getCh(){if(!selectedBetItem||!selectedWinItem)return 0;const b=selectedBetItem.p,w=selectedWinItem.p;if(w<=0||b<=0||b>=w)return 0;return Math.min((b/w)*100*.88,95)}
 function getM(){if(!selectedBetItem||!selectedWinItem)return 0;return selectedWinItem.p/selectedBetItem.p}
 function updateUpgraderDisplay(){const ch=getCh(),m=getM();let pr=0;if(selectedBetItem&&selectedWinItem)pr=selectedWinItem.p-selectedBetItem.p;document.getElementById('chanceDisplay').textContent=ch.toFixed(1)+'%';document.getElementById('centerChance').textContent=ch.toFixed(1)+'%';document.getElementById('multDisplay').textContent='X'+m.toFixed(2);document.getElementById('profitDisplay').textContent=(pr>=0?'+':'')+pr.toFixed(0);document.getElementById('profitDisplay').className='stat-value '+(pr>=0?'green':'red');document.getElementById('barWin').style.width=ch+'%';document.getElementById('winLabel').textContent=ch.toFixed(1)+'% выигрыш';document.getElementById('loseLabel').textContent=(100-ch).toFixed(1)+'% проигрыш';const wd=(ch/100)*360,wh=wd/2;document.getElementById('wheelRing').style.setProperty('--wh',wh+'deg');document.querySelectorAll('.tick').forEach((t,i)=>{const a=i*5;t.classList.remove('win-tick','lose-tick');if(a>=(180-wh)&&a<=(180+wh))t.classList.add('win-tick');else t.classList.add('lose-tick')});document.querySelectorAll('.mult-btn').forEach(b=>{const bm=parseFloat(b.textContent.replace('X',''));b.classList.toggle('active',Math.abs(m-bm)<.01)});const col=ch>60?'#2ecc71':ch<20?'#e74c3c':'#f5c518';document.getElementById('chanceDisplay').style.color=col;document.getElementById('centerChance').style.color=col}
